@@ -1,0 +1,128 @@
+@import '_colorsNfonts';
+
+.loginPage{
+    font-family: $myFont, sans-serif;
+    display: flex;
+    color: $primary-color;
+    flex-direction: column;
+
+
+    .loginDiv{
+        display: flex;
+        padding: 40px 10px;
+        flex-direction: column;
+        align-items:center;
+        margin: 50px auto;
+        width: 300px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+        h2{
+            color: $primary-color;
+            cursor: default;
+            margin: 0px 0px 30px;
+        }
+        
+        .myInput{
+            position: relative;
+            display: flex;
+            justify-content: center;
+
+            p{
+                font-size: 18px;
+                pointer-events:none;
+                color: $primary-color;
+                transform-origin: 0 0;
+                transition: all .3s;
+                position: absolute;
+                margin: 0;
+                top: 10px;
+                left: 20px;
+            }
+        }
+
+        .inputsDiv{
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+        input{
+            border:none;
+            background-color: rgb(223, 217, 217);
+            padding: 15px 10px 0px;
+            font-size: 18px;
+            height:30px;
+
+            &[type="password"]{
+                letter-spacing: 3px;
+            }    
+            &:focus{
+                outline: none;
+                border-left: 1px solid $primary-color;
+            }&:focus + .usernameIndicator, &:not(:placeholder-shown) + .usernameIndicator{
+                transform: translate(-10px, -10px) scale(.7);
+                
+            }
+
+            &::placeholder{
+                color: transparent;
+            }
+        }
+
+       .loggingDiv{
+            margin-top: 30px;
+            display: flex;
+            width: 252px;
+            justify-content: space-between;
+            align-items: center;
+            .logoGoogleDiv{
+                cursor: pointer;
+                border: 1px solid $primary-color;
+                height: 30px;
+                width: 30%;
+                border-radius: 4px;
+                padding: 10px 0px;
+                display: flex;
+                justify-content: center;
+                img{
+                    max-height: 100%;
+                }
+            }
+
+            span{
+                cursor: pointer;
+                border: 1px solid $primary-color;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 52px;
+                width: 60%;
+                margin: 0px;
+                font-size: 50px;
+                transition: all .5s;
+
+                &:hover{
+                    background-color: $primary-color;
+                    color: white;
+                }
+            }
+       }
+
+        
+
+
+    }
+}
+
+@media(max-width:350px){
+    .loginDiv{
+        width: 85% !important;
+        margin-top: 10px !important;
+        input{
+            width: 85%;
+        }
+    }.loggingDiv{
+        width: 85% !important;
+    }
+}

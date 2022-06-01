@@ -1,0 +1,23 @@
+@import '_colorsNfonts';
+
+.myHeader{
+    display: flex;
+    width: 100%;
+    height: 150px;
+    img{
+        max-height: 100%;
+    }
+}
+
+@media(max-width:350px){
+    .myHeader{
+        height: 100px;
+    }
+}
+@media(max-width:600px){
+    .myHeader{
+        justify-content: center;
+        
+    
+    }
+}

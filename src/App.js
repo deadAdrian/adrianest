@@ -1,9 +1,15 @@
 import React from "react";
+import {HashRouter as Router, Routes, Route} from 'react-router-dom';
+import { LoginPage } from './pages/loginPage';
 
 function App() {
   return (
     <div className="App">
-      <h1>Test</h1> 
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />}/>
+        </Routes>
+      </Router>
     </div>
   );
 }
