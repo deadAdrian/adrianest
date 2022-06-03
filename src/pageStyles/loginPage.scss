@@ -14,8 +14,8 @@
         align-items:center;
         margin: 50px auto;
         width: 300px;
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 50px;
+        user-select: none;
         h2{
             color: $primary-color;
             cursor: default;
@@ -109,8 +109,40 @@
             }
        }
 
+        .orDiv{
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            hr{
+                border: 1px solid $primary-color;
+                position: absolute;
+                width: 100%;
+                top: 19px;
+                left: 0px;
+                z-index: -2;
+            }
+            p{
+                position: relative;
+                background-color:white;
+                width: 30px;
+                text-align: center;
+                z-index: 10;
+            }
+            
+        }
         
-
+       .loginOptions{
+            p{
+               margin: 0px;
+               cursor: default;
+            }
+            .createAccP{
+               text-decoration: underline;
+               cursor: pointer;
+               
+            }
+       }
 
     }
 }
