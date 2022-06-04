@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../pageStyles/myHeader.scss';
 
-export const Header = () => {
+export const Header = ({logged, user}) => {
 
     return (
         <motion.div className="myHeader"
@@ -11,6 +11,10 @@ export const Header = () => {
             animate={{ y: 0, opacity: 1}}
         >
             <Link to="/"><img src={`${process.env.PUBLIC_URL}/assets/imgs/logo.png`} /></Link>
+
+            {logged && 
+                <p>Welcome, {user}</p>
+            }
         </motion.div>
     );
 }
