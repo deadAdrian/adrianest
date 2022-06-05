@@ -67,7 +67,7 @@ const signUpDivVariants = {
 export const LoginPage = (props) => {
     const [currentStateLogin, setCurrentStateLogin] = useState("visible");
     const [currentStateSignUp, setCurrentStateSignUp] = useState("");
-    const [createAcc, setCreateAcc] = useState({email: "", password: "", confirmPassword: ""});
+    const [createAcc, setCreateAcc] = useState({username: "", email: "", password: "", confirmPassword: ""});
 
     const signUpAnimation = () => {
         setCurrentStateLogin("variant1In");
@@ -91,6 +91,9 @@ export const LoginPage = (props) => {
             }case 'signUpConfirmPass':{
                 setCreateAcc({...createAcc, confirmPassword: e.target.value});
                 verifyPassword();
+                break;
+            }case 'signUpUsername':{
+                setCreateAcc({...createAcc, username: e.target.value});
                 break;
             }
         }
@@ -184,10 +187,14 @@ export const LoginPage = (props) => {
                     <form 
                         onSubmit={(e) => {
                             e.preventDefault();
-                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, props.setUserState);
+                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, props.setUserState, createAcc.username);
                         }}
                         className="inputsDiv"
                     >
+                        <div className="myInput">
+                            <input value={createAcc.username} onChange={handleChange1} id='signUpUsername' type="text" placeholder="username" required/>
+                            <p className="usernameIndicator">username</p>
+                        </div>
                         <div className="myInput">
                             <input value={createAcc.email} onChange={handleChange1} id='signUpEmail' type="email" placeholder="email" required/>
                             <p className="usernameIndicator">email</p>
