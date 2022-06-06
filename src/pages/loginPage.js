@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {motion} from 'framer-motion';
 import {createAccount, loginGoogle, loginEmail} from '../components/firebaseStuff';
 import '../pageStyles/loginPage.scss';
+import {LoginModal} from '../components/loginModal';
 
 const loginDivVariants = {
     hidden:{
@@ -68,6 +69,8 @@ export const LoginPage = (props) => {
     const [currentStateLogin, setCurrentStateLogin] = useState("visible");
     const [currentStateSignUp, setCurrentStateSignUp] = useState("");
     const [createAcc, setCreateAcc] = useState({username: "", email: "", password: "", confirmPassword: ""});
+    const [loginModal, setLoginModal] = useState({color: "", message: "", visible: "hidden"});
+
 
     const signUpAnimation = () => {
         setCurrentStateLogin("variant1In");
@@ -119,6 +122,7 @@ export const LoginPage = (props) => {
 
     return (
         <div className="loginPage">
+            <LoginModal info={loginModal}/>
             <motion.div className="loginDiv"
                 variants={loginDivVariants}
                 initial="hidden"
@@ -138,12 +142,18 @@ export const LoginPage = (props) => {
                 </div>
 
                 <div className="loggingDiv">
-                    <span
-                        onClick={() => {
-                            loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState);
-                        }}
-                    >&#10230;</span>
-                    <div onClick={() => {loginGoogle(props.setUserState)}} className="logoGoogleDiv">
+                    <div className='loginButtonDiv'>
+                        
+                        <span
+                            className="span1"
+                            onClick={() => {
+                                loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, setLoginModal);
+                            }}
+                        >&#10230;</span>
+                        <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    
+                    <div onClick={() => {loginGoogle(props.setUserState, setLoginModal)}} className="logoGoogleDiv">
                         <img src={`${process.env.PUBLIC_URL}/assets/imgs/googleIcon.png`}></img>
                     </div>
                     
@@ -187,7 +197,7 @@ export const LoginPage = (props) => {
                     <form 
                         onSubmit={(e) => {
                             e.preventDefault();
-                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, props.setUserState, createAcc.username);
+                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, props.setUserState, createAcc.username, setLoginModal);
                         }}
                         className="inputsDiv"
                     >

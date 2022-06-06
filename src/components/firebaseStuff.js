@@ -3,7 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWith
     signInWithEmailAndPassword 
 
 } from "firebase/auth";
-import { getFirestore, collection, setDoc, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -22,37 +22,52 @@ const db = getFirestore(app);
 
 
 //register a user with email and password
-export const createAccount = (email, password, signInAnimation, setCreateAcc, setUserState, username) => {
+export const createAccount = async (email, password, signInAnimation, setCreateAcc, setUserState, username, setLoginModal) => {
     
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log("Account sucessfully created");
-        signInAnimation();
-        registerUsername(user.email, username);
-        setCreateAcc({username: "", email: "", password: "", confirmPassword: ""});
-        getUsername(email)
-                .then((result) => {
-                    username = result;
-                    setUserState({logged: userLogged(), user: username});
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+    const verify1 = await verifyUsername(username);
+    console.log(verify1);
+    if(verify1){
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                setLoginModal({color: "green", message: "Account sucessfully created", visible: "visible"});
+                setTimeout(() => {setLoginModal({color: "green", message: "Account sucessfully created", visible: "hidden"});}, 2000);
+                signInAnimation();
+                registerUsername(user.email, username);
+                setCreateAcc({username: "", email: "", password: "", confirmPassword: ""});
+                getUsername(email)
+                        .then((result) => {
+                            username = result;
+                            setUserState({logged: userLogged(), user: username});
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
         
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        alert(errorCode, errorMessage);
-        // ..
-    });
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                switch(errorCode){
+                    case 'auth/email-already-in-use':{
+                        setLoginModal({color: "red", message: "This email is already in use!", visible: "visible"});
+                        setTimeout(() => {setLoginModal({color: "red", message: "This email is already in use!", visible: "hidden"});}, 2000);
+                        
+                    }
+                }
+                
+                // ..
+            });
+    }else{
+        setLoginModal({color: "red", message: "This username is already in use!", visible: "visible"});
+        setTimeout(() => {setLoginModal({color: "red", message: "This username is already in use!", visible: "hidden"});}, 2000);
+        
+    }
+    
 }
 
 //register a user with google account
-export const loginGoogle = (setUserState) => {
+export const loginGoogle = (setUserState, setLoginModal) => {
     
     signInWithPopup(auth, provider)
     .then((result) => {
@@ -62,7 +77,8 @@ export const loginGoogle = (setUserState) => {
         // The signed-in user info.
         const user = result.user;
         setUserState({logged: userLogged(), user: user.displayName});
-        // ...
+        setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
+        setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
     }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -76,16 +92,20 @@ export const loginGoogle = (setUserState) => {
 }
 
 //login a user with email and password
-export const loginEmail = (email, password, setUserState) => {
+export const loginEmail = (email, password, setUserState, setLoginModal) => {
+    spinnerShower(true);
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            // Signed in
+            // Signed in    
+            spinnerShower(false);
             const user = userCredential.user;
             let username;
             getUsername(email)
                 .then((result) => {
                     username = result;
                     setUserState({logged: userLogged(), user: username});
+                    setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
+                    setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -94,11 +114,10 @@ export const loginEmail = (email, password, setUserState) => {
             // ...
         })
         .catch((error) => {
-            console.log(email, password);
             const errorCode = error.code;
-            const errorMessage = error.message;
+            setLoginModal({color: "red", message: "Email or password wrong", visible: "visible"});
+            setTimeout(() => {setLoginModal({color: "red", message: "Email or password wrong", visible: "hidden"});}, 2000);
             
-            console.log(errorCode, errorMessage);
         });
 }
 
@@ -126,5 +145,30 @@ export const userLogged = () => {
         return true;
     }else{
         return false;
+    }
+}
+
+const verifyUsername = async (username) => {
+    let mdsEm = true;
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+        if(doc.data().username === username){
+            mdsEm = false;
+        }
+    });
+    return mdsEm;
+    
+}
+
+const spinnerShower = (x) => {
+    let spinner = document.getElementsByClassName('lds-ellipsis')[0];
+    let span1 = document.getElementsByClassName('span1')[0];
+
+    if(x){
+        spinner.style.display = 'inline-block';
+        span1.style.display = 'none';
+    }else{
+        spinner.style.display = 'none';
+        span1.style.display = 'flex';
     }
 }
