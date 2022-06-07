@@ -230,7 +230,7 @@
         position: absolute;
         padding: 40px 10px;
         background-color: white;
-        top: 50px;
+        top: 150px;
         margin: 0 auto;
         left:0;
         right: 0;
@@ -275,7 +275,6 @@
 @media(max-width:350px){
     .loginDiv, .signUpDiv{
         width: 85% !important;
-        margin-top: 10px !important;
         input{
             width: 85%;
         }

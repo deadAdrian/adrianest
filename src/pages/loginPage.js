@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import {motion} from 'framer-motion';
+import { Header } from '../components/header';
 import {createAccount, loginGoogle, loginEmail} from '../components/firebaseStuff';
 import '../pageStyles/loginPage.scss';
-import {LoginModal} from '../components/loginModal';
+
 
 const loginDivVariants = {
     hidden:{
@@ -69,8 +71,7 @@ export const LoginPage = (props) => {
     const [currentStateLogin, setCurrentStateLogin] = useState("visible");
     const [currentStateSignUp, setCurrentStateSignUp] = useState("");
     const [createAcc, setCreateAcc] = useState({username: "", email: "", password: "", confirmPassword: ""});
-    const [loginModal, setLoginModal] = useState({color: "", message: "", visible: "hidden"});
-
+    const navigate = useNavigate();
 
     const signUpAnimation = () => {
         setCurrentStateLogin("variant1In");
@@ -121,12 +122,17 @@ export const LoginPage = (props) => {
     }
 
     return (
-        <div className="loginPage">
-            <LoginModal info={loginModal}/>
+        <div className="loginPage" >
+            <Header logged={props.logged} user={props.user} homepage={true}/>
             <motion.div className="loginDiv"
                 variants={loginDivVariants}
                 initial="hidden"
                 animate={currentStateLogin}
+                onKeyDown={(e) => {
+                    if(e.key === 'Enter'){
+                        loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate);
+                    }
+                }}
             >
                 <h2>Sign In</h2>
 
@@ -145,15 +151,16 @@ export const LoginPage = (props) => {
                     <div className='loginButtonDiv'>
                         
                         <span
+                            
                             className="span1"
                             onClick={() => {
-                                loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, setLoginModal);
+                                loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate);
                             }}
                         >&#10230;</span>
                         <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     </div>
                     
-                    <div onClick={() => {loginGoogle(props.setUserState, setLoginModal)}} className="logoGoogleDiv">
+                    <div onClick={() => {loginGoogle(props.setUserState, props.setLoginModal, navigate)}} className="logoGoogleDiv">
                         <img src={`${process.env.PUBLIC_URL}/assets/imgs/googleIcon.png`}></img>
                     </div>
                     
@@ -197,12 +204,12 @@ export const LoginPage = (props) => {
                     <form 
                         onSubmit={(e) => {
                             e.preventDefault();
-                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, props.setUserState, createAcc.username, setLoginModal);
+                            createAccount(createAcc.email, createAcc.password, signInAnimation, setCreateAcc, createAcc.username, props.setLoginModal, navigate);
                         }}
                         className="inputsDiv"
                     >
                         <div className="myInput">
-                            <input value={createAcc.username} onChange={handleChange1} id='signUpUsername' type="text" placeholder="username" required/>
+                            <input value={createAcc.username} onChange={handleChange1} id='signUpUsername' type="text" placeholder="username" maxLength="8" required/>
                             <p className="usernameIndicator">username</p>
                         </div>
                         <div className="myInput">

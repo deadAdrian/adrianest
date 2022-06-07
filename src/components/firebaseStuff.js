@@ -1,10 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup,
-    signInWithEmailAndPassword 
+    signInWithEmailAndPassword, setPersistence, browserSessionPersistence,onAuthStateChanged 
 
 } from "firebase/auth";
 import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore";
-
+import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAFXoE3wEDvMCf3xTpcyk0O1riQnzYKwHw",
@@ -16,13 +16,62 @@ const firebaseConfig = {
     measurementId: "G-NTRFZS1Y8V"
 };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+export const auth = getAuth();
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
+const storage = getStorage();
+
+export const catchImgs = (setImgs) => {
+    const listRef = ref(storage, "teste");
+    const imgsSrc = [];
+    listAll(listRef)
+        .then((list) => {
+            console.log(list);
+            list.items.forEach((img) => {
+
+                getDownloadURL(ref(storage, img._location.path))
+                    .then((url) => {                    
+                        imgsSrc.push(url);
+                        setImgs(imgsSrc);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            });
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    
+}
+
+
+
+
+export const esperaai  = (setInit, setUserState, setImgs) => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        user.displayName ? setUserState({user: user.displayName, logged: true}) :
+        getUsername(user.email)
+            .then((username) => {
+                setUserState({user: username, logged: true});
+                setInit(false);
+            })
+            .catch((error) => { console.log(error) });
+        } else {
+        // User is signed out
+        // ...
+        }
+    });
+};
 
 
 //register a user with email and password
-export const createAccount = async (email, password, signInAnimation, setCreateAcc, setUserState, username, setLoginModal) => {
+export const createAccount = async (email, password, signInAnimation, setCreateAcc, username, setLoginModal, navigate) => {
     
     const verify1 = await verifyUsername(username);
     console.log(verify1);
@@ -36,14 +85,7 @@ export const createAccount = async (email, password, signInAnimation, setCreateA
                 signInAnimation();
                 registerUsername(user.email, username);
                 setCreateAcc({username: "", email: "", password: "", confirmPassword: ""});
-                getUsername(email)
-                        .then((result) => {
-                            username = result;
-                            setUserState({logged: userLogged(), user: username});
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        })
+               
         
             })
             .catch((error) => {
@@ -67,34 +109,44 @@ export const createAccount = async (email, password, signInAnimation, setCreateA
 }
 
 //register a user with google account
-export const loginGoogle = (setUserState, setLoginModal) => {
+export const loginGoogle = (setUserState, setLoginModal, navigate) => {
+    setPersistence(auth, browserSessionPersistence)
+        .then(() => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    const user = result.user;
+                    setUserState({logged: userLogged() ? true : false, user: user.displayName});
+                    setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
+                    setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
+                    navigate("/redirect", {replace: true});
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // The email of the user's account used.
+                    const email = error.email;
+                    // The AuthCredential type that was used.
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                    // ...
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     
-    signInWithPopup(auth, provider)
-    .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        setUserState({logged: userLogged(), user: user.displayName});
-        setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
-        setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
-    }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-    });
 }
 
 //login a user with email and password
-export const loginEmail = (email, password, setUserState, setLoginModal) => {
+export const loginEmail = (email, password, setUserState, setLoginModal, navigate) => {
     spinnerShower(true);
-    signInWithEmailAndPassword(auth, email, password)
+
+    setPersistence(auth, browserSessionPersistence)
+    .then(() => {
+        return signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in    
             spinnerShower(false);
@@ -103,9 +155,11 @@ export const loginEmail = (email, password, setUserState, setLoginModal) => {
             getUsername(email)
                 .then((result) => {
                     username = result;
-                    setUserState({logged: userLogged(), user: username});
+                    setUserState({logged: userLogged() ? true : false, user: username});
                     setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
+            
                     setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
+                    navigate("/redirect", {replace: true});
                 })
                 .catch((error) => {
                     console.log(error);
@@ -114,11 +168,17 @@ export const loginEmail = (email, password, setUserState, setLoginModal) => {
             // ...
         })
         .catch((error) => {
+            spinnerShower(false);
             const errorCode = error.code;
             setLoginModal({color: "red", message: "Email or password wrong", visible: "visible"});
             setTimeout(() => {setLoginModal({color: "red", message: "Email or password wrong", visible: "hidden"});}, 2000);
             
         });
+    })
+    .catch((error) => {
+        console.log(error.code)
+    });
+    
 }
 
 const registerUsername = async (email, username) => {
@@ -128,7 +188,7 @@ const registerUsername = async (email, username) => {
     });
 }
 
-const getUsername = async (email) => {
+export const getUsername = async (email) => {
     const docRef = doc(db, "users", email);
     const docSnap = await getDoc(docRef);
 

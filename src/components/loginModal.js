@@ -4,10 +4,10 @@ import '../pageStyles/loginModal.scss';
 
 const modalVariants = {
     hidden:{
-        y: -300
+        y: -100
     },
     visible:{
-        y: -100,
+        y: 70,
     }
 }
 

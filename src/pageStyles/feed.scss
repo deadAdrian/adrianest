@@ -1,0 +1,16 @@
+.feed{
+
+    .feedImageDiv{
+        margin-top: 20px;
+        display: flex;
+        gap:10px;
+
+        .imgCard{
+            width: 300px;
+            
+            img{
+                max-width: 100%;
+            }
+        }
+    }
+}
