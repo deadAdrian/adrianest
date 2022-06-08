@@ -21,8 +21,8 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 const storage = getStorage();
 
-export const catchImgs = (setImgs) => {
-    const listRef = ref(storage, "teste");
+export const catchImgs = (setImgs, setInitFeed) => {
+    const listRef = ref(storage, "images");
     const imgsSrc = [];
     listAll(listRef)
         .then((list) => {
@@ -31,8 +31,7 @@ export const catchImgs = (setImgs) => {
 
                 getDownloadURL(ref(storage, img._location.path))
                     .then((url) => {                    
-                        imgsSrc.push(url);
-                        setImgs(imgsSrc);
+                        imgsSrc.push(url);         
                     })
                     .catch((error) => {
                         console.log(error);
@@ -40,6 +39,10 @@ export const catchImgs = (setImgs) => {
 
             });
             
+        }).then(() => {
+            console.log(imgsSrc);
+            setImgs(imgsSrc);
+            setTimeout(() => {setInitFeed(false)}, 4000);    
         })
         .catch((error) => {
             console.log(error);

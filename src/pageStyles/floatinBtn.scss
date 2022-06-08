@@ -1,0 +1,17 @@
+@import 'colorsNfonts';
+
+.floatinBtn{
+    display: flex;
+    cursor: pointer;
+    justify-content:center;
+    align-items:center;
+    position: absolute;
+    z-index: 1;
+    background-color: $secondary-color;
+    color: white;
+    font-size:30px;
+    border-radius: 50%;
+    padding: 10px 20px;
+    top:87%;
+    right: 2%;
+}

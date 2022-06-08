@@ -10,7 +10,7 @@ export const Header = ({logged, user, homepage, feed}) => {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1}}
         >
-            <Link to="/feed"><img src={`${process.env.PUBLIC_URL}/assets/imgs/logo.png`} /></Link>
+            <Link to="/redirect"><img src={`${process.env.PUBLIC_URL}/assets/imgs/logo.png`} /></Link>
 
             {feed &&
                 <input placeholder="Search" className="searchInput" type="text"/>

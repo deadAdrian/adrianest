@@ -1,0 +1,30 @@
+@import 'colorsNfonts';
+
+.shadow{
+    background-color: rgba(0, 0, 0, 0);
+    width:100vw;
+    height: 100vh;
+    position: fixed;
+    top:0;
+    left: 0;
+    .feedModal{
+        display: flex;
+        position: absolute;
+        top:75%;
+        right: 5%;
+        justify-content: center;
+        flex-direction: column;
+        width: fit-content;
+        border-radius: 4px;
+        background-color: $secondary-color;
+        color: white;
+    
+        p{
+            margin: 15px 20px;
+            cursor: pointer;
+            text-align: center;
+        }
+    
+    }
+}
+

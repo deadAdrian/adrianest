@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from "react";
 import {HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import { LoginPage } from './pages/loginPage';
-import {esperaai, auth, getUsername} from './components/firebaseStuff';
+import { auth, getUsername} from './components/firebaseStuff';
 import { Feed } from './pages/feed';
 import {LoginModal} from './components/loginModal';
 import {onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   const [userState, setUserState] = useState({logged: false, user: ""});
-  const [imgs, setImgs] = useState();
+  const [imgs, setImgs] = useState([]);
   const [loginModal, setLoginModal] = useState({color: "", message: "", visible: "hidden"});
   const [init, setInit] = useState(true);
 
@@ -16,11 +16,10 @@ function App() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/firebase.User
-      if(user.displayName){
+      if(user.displayName && (init || !userState.logged)){
         setUserState({user: user.displayName, logged: true});
         setInit(false);
-      }else{
+      }else if(init || !userState.logged){
         getUsername(user.email)
           .then((username) => {
               setUserState({user: username, logged: true});
