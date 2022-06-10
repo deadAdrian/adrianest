@@ -13,15 +13,16 @@
 
         .imgCard{
             display: flex;
+            justify-content: center;
             background-color: white;
             padding: 10px 10px;
             border-radius: 4px;
-            max-width: 300px;
-            min-width: 200px;
+            width: 250px;
+            height: 250px;
             img{
                 cursor: pointer;
-                max-width: 300px;
-                min-width:200px;
+                object-fit: cover;
+                max-width: 100%;
                 
             }
         }

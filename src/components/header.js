@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../pageStyles/myHeader.scss';
 
-export const Header = ({logged, user, homepage, feed}) => {
-
+export const Header = ({logged, username, homepage, feed}) => {
     return (
         <motion.div className="myHeader"
             initial={{ y: -100, opacity: 0 }}
@@ -16,7 +15,7 @@ export const Header = ({logged, user, homepage, feed}) => {
                 <input placeholder="Search" className="searchInput" type="text"/>
             }
             {logged && !homepage &&
-                <p>Welcome, {user}</p>
+                <p>Welcome, {username}</p>
             }
         </motion.div>
     );

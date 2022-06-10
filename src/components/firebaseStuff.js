@@ -53,24 +53,24 @@ export const catchImgs = (setImgs, setInitFeed) => {
 
 
 
-export const esperaai  = (setInit, setUserState, setImgs) => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        user.displayName ? setUserState({user: user.displayName, logged: true}) :
-        getUsername(user.email)
-            .then((username) => {
-                setUserState({user: username, logged: true});
-                setInit(false);
-            })
-            .catch((error) => { console.log(error) });
-        } else {
-        // User is signed out
-        // ...
-        }
-    });
-};
+// export const esperaai  = (setInit, setUserState, setImgs) => {
+//     onAuthStateChanged(auth, (user) => {
+//         if (user) {
+//         // User is signed in, see docs for a list of available properties
+//         // https://firebase.google.com/docs/reference/js/firebase.User
+//         user.displayName ? setUserState({user: user.displayName, logged: true}) :
+//         getUsername(user.email)
+//             .then((username) => {
+//                 setUserState({user: username, logged: true});
+//                 setInit(false);
+//             })
+//             .catch((error) => { console.log(error) });
+//         } else {
+//         // User is signed out
+//         // ...
+//         }
+//     });
+// };
 
 
 //register a user with email and password
@@ -111,8 +111,8 @@ export const createAccount = async (email, password, signInAnimation, setCreateA
     
 }
 
-//register a user with google account
-export const loginGoogle = (setUserState, setLoginModal, navigate) => {
+//login a user with google account
+export const loginGoogle = (setUserState, setLoginModal, navigate, setUserPic) => {
     setPersistence(auth, browserSessionPersistence)
         .then(() => {
             signInWithPopup(auth, provider)
@@ -122,7 +122,21 @@ export const loginGoogle = (setUserState, setLoginModal, navigate) => {
                     const token = credential.accessToken;
                     // The signed-in user info.
                     const user = result.user;
-                    setUserState({logged: userLogged() ? true : false, user: user.displayName});
+
+                    
+                    verifyUsername(user.displayName)
+                        .then((result) => {
+                            if(result){
+                                registerUsername(user.email, user.displayName);
+                            }
+                        })
+                        .catch((error) => (console.log(error)));
+                    setUserState({logged: userLogged() ? true : false, username: user.displayName});
+                    getUsername(user.email)
+                        .then((result) => {
+                            setUserPic(result.pic)
+                        })
+                        .catch((error) => {console.log(error)});
                     setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
                     setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
                     navigate("/redirect", {replace: true});
@@ -144,7 +158,7 @@ export const loginGoogle = (setUserState, setLoginModal, navigate) => {
 }
 
 //login a user with email and password
-export const loginEmail = (email, password, setUserState, setLoginModal, navigate) => {
+export const loginEmail = (email, password, setUserState, setLoginModal, navigate, setUserPic) => {
     spinnerShower(true);
 
     setPersistence(auth, browserSessionPersistence)
@@ -154,11 +168,12 @@ export const loginEmail = (email, password, setUserState, setLoginModal, navigat
             // Signed in    
             spinnerShower(false);
             const user = userCredential.user;
-            let username;
+            let username1;
             getUsername(email)
                 .then((result) => {
-                    username = result;
-                    setUserState({logged: userLogged() ? true : false, user: username});
+                    username1 = result.username;
+                    setUserState({logged: userLogged() ? true : false, username: username1});
+                    setUserPic(result.pic);
                     setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "visible"});
             
                     setTimeout(() => {setLoginModal({color: "green", message: "You are sucessfully logged in", visible: "hidden"});}, 2000);
@@ -187,8 +202,10 @@ export const loginEmail = (email, password, setUserState, setLoginModal, navigat
 const registerUsername = async (email, username) => {
 
     await setDoc(doc(db, "users", `${email}`), {
+        profilePic: 'defaultUser.png',
         username: username
     });
+
 }
 
 export const getUsername = async (email) => {
@@ -196,7 +213,12 @@ export const getUsername = async (email) => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        return (docSnap.data().username) ;
+        let info = {
+            username: docSnap.data().username, 
+            pic: docSnap.data().profilePic
+        }
+        
+        return info;
     } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
@@ -221,6 +243,15 @@ const verifyUsername = async (username) => {
     });
     return mdsEm;
     
+}
+
+export const updateProfileImage = async (email, username, image, setUserPic) => {
+    await setDoc(doc(db, "users", `${email}`), {
+        username: username,
+        profilePic: image
+    });
+
+    setUserPic(image);
 }
 
 const spinnerShower = (x) => {

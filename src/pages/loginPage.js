@@ -22,20 +22,19 @@ const loginDivVariants = {
     variant1In:{
         x: [0, -200, 0],
         opacity: 0,
-        scale: [1, 0.5],
-        zIndex: -1,
+        scale: 0.5,
+        zIndex: 1,
         transition:{
-            duration: 1.5,
+            duration: 1,
         }
     },
     variant2In:{
         x: 0,
         opacity: 1,
-        zIndex: 1,
+        zIndex: 2,
         scale: 1,
         transition:{
             delay: 0.5,
-            duration: 1,
         }
     }
 }
@@ -48,20 +47,19 @@ const signUpDivVariants = {
     },
     visibleUp:{
         opacity: 1,
-        zIndex: 1,
+        zIndex: 2,
         scale: 1,
         transition:{
             delay: 0.5,
-            duration: 1,
         }
     },
     variant1Up:{
         x: [0, -200, 0],
         opacity: 0,
         scale: [1, 0.8],
-        zIndex: -1,
+        zIndex: 1,
         transition:{
-            duration: 1.5,
+            duration: 1,
         }
     }
     
@@ -123,14 +121,14 @@ export const LoginPage = (props) => {
 
     return (
         <div className="loginPage" >
-            <Header logged={props.logged} user={props.user} homepage={true}/>
+            <Header logged={props.logged}  homepage={true}/>
             <motion.div className="loginDiv"
                 variants={loginDivVariants}
                 initial="hidden"
                 animate={currentStateLogin}
                 onKeyDown={(e) => {
                     if(e.key === 'Enter'){
-                        loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate);
+                        loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate, props.setUserPic);
                     }
                 }}
             >
@@ -150,17 +148,16 @@ export const LoginPage = (props) => {
                 <div className="loggingDiv">
                     <div className='loginButtonDiv'>
                         
-                        <span
-                            
+                        <div
                             className="span1"
                             onClick={() => {
-                                loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate);
+                                loginEmail(document.getElementById('signInEmail').value, document.getElementById('signInPass').value, props.setUserState, props.setLoginModal, navigate, props.setUserPic);
                             }}
-                        >&#10230;</span>
+                        >Login</div>
                         <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     </div>
                     
-                    <div onClick={() => {loginGoogle(props.setUserState, props.setLoginModal, navigate)}} className="logoGoogleDiv">
+                    <div onClick={() => {loginGoogle(props.setUserState, props.setLoginModal, navigate, props.setUserPic)}} className="logoGoogleDiv">
                         <img src={`${process.env.PUBLIC_URL}/assets/imgs/googleIcon.png`}></img>
                     </div>
                     

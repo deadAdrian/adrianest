@@ -1,31 +1,37 @@
 import React, {useState, useEffect} from 'react';
-import {Navigate} from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import { Header } from '../components/header';
 import {ImgCard} from '../components/imgCard';
 import {FloatinBtn} from '../components/floatinBtn';
 import {FeedModal} from '../components/feedModal';
 import '../pageStyles/feed.scss';
 import uniqid from 'uniqid';
-import { catchImgs } from '../components/firebaseStuff';
+import {auth, catchImgs } from '../components/firebaseStuff';
+
 
 export const Feed = (props) => {
     const [initFeed, setInitFeed] = useState(true);
     const [floatin, setFloatin] = useState("visible");
     const [modalOptions, setModalOptions] = useState('hidden');
-
+    let navigate = useNavigate();
+    let timeout2;
     useEffect(() => {
         catchImgs(props.setImgs, setInitFeed);
         
     }, []);
 
-    if(props.init && props.logged){
+   
+
+    if(props.init && auth.currentUser){
         return null;
-    }else if(!props.init && props.logged){
+        
+    }else if(!props.init && auth.currentUser){
+        clearTimeout(timeout2);
         return (
             <div className='feed'>
                 <FloatinBtn floatin={floatin} setFloatin={setFloatin} setModalOptions={setModalOptions}/>
                 <FeedModal visible={modalOptions} setModalOptions={setModalOptions} setFloatin={setFloatin} />
-                <Header logged={props.logged} user={props.user} homepage={false} feed={true}/>
+                <Header logged={props.logged} username={props.username} homepage={false} feed={true}/>
                 
                 
             
@@ -50,8 +56,14 @@ export const Feed = (props) => {
                 
             </div>
         ); 
-    }else if(!props.init && !props.logged){
-        return <Navigate to="/" replace /> 
+    }else{
+        
+        timeout2 = setTimeout(() => {
+            if(!auth.currentUser){
+                navigate("/");
+            }
+        } , 3000);
+        
     }
      
     

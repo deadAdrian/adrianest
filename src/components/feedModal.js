@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {motion} from 'framer-motion';
 import '../pageStyles/feedModal.scss';
+import {auth} from './firebaseStuff';
 
 const feedModalVariants = {
     hidden:{
@@ -18,13 +20,23 @@ const feedModalVariants = {
 
 
 export const FeedModal = ({visible, setModalOptions, setFloatin}) => {
+    let timeout1;
+    let navigate = useNavigate();
 
-
+    useEffect(() => {
+    
+        return () => {
+            if(!document.getElementsByClassName('shadow')[0]?.style || !document.getElementsByClassName('floatinBtn')[0]?.style){
+                clearTimeout(timeout1);
+            }
+            
+        }
+    });
     return (
         <div className='shadow' onClick={() => {
             setModalOptions("hidden");
             setFloatin("visible");
-            setTimeout(() => {
+            timeout1 = setTimeout(() => {
                 document.getElementsByClassName('shadow')[0].style.display = 'none';
                 document.getElementsByClassName('floatinBtn')[0].style.pointerEvents = 'all';
             }, 100);
@@ -36,8 +48,8 @@ export const FeedModal = ({visible, setModalOptions, setFloatin}) => {
                 className="feedModal"
             >
                 <motion.p whileHover={{scale: 1.1}}>Add Image</motion.p>
-                <motion.p whileHover={{scale: 1.1}}>Settings</motion.p>
-                <motion.p whileHover={{scale: 1.1}}>Logout</motion.p>
+                <Link to="/profile"><motion.p whileHover={{scale: 1.1}}>Profile</motion.p></Link>
+                <motion.p whileHover={{scale: 1.1}} onClick={() => {auth.signOut(); navigate("/")}}>Logout</motion.p>
             </motion.div>
         </div>
         

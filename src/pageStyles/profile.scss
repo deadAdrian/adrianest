@@ -1,0 +1,120 @@
+@import 'colorsNfonts';
+@import url('https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css');
+
+.profile{
+    background-color: $primary-color;
+    position: relative;
+
+    .shadow{
+        background-color: rgba(0, 0, 0, 0.589);
+        display:none;
+        width:100vw;
+        z-index: 2;
+        height: 100vh;
+        position: fixed;
+        top:0;
+        left: 0;
+
+        .profileImgsModal{
+            position: fixed;
+            left: 0;
+            right:0;
+            margin: 110px auto;
+            display: flex;
+            justify-content: center;
+            border-radius: 4px;
+            flex-flow: row wrap;
+            background-color: $secondary-color;
+            gap:20px;
+            width: 66vw;
+            height: 500px;
+            padding:20px 20px;
+            img{
+                background-color: $secondary-color;
+                border-radius: 50%;
+                max-width: 150px;
+                min-width: 50px;
+            }
+        }
+    }
+    
+
+    .topProfile{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: white;
+        h1{
+            text-align: center;
+        }
+
+        a{
+            left:3%;
+            display: flex;
+            align-items: center;
+            font-size: 50px;
+            position: absolute;
+            text-decoration: none;
+            color:white;
+        }
+        
+    }
+
+    .profileConfigs{
+        display: flex;
+        padding:20px 20px;
+        background-color: $secondary-color;
+        width: 80%;
+        border-radius: 4px;
+        margin:30px auto;
+        
+        .profilePicDiv{
+            background-color: transparent;
+            border-radius: 50%;
+            position: relative;
+            width:250px;
+            height: 250px;
+            overflow: hidden;
+            .profilePic{
+                max-width: 100%;
+            }
+            p{
+                cursor: pointer;
+                margin: 0 auto;
+                width: 200px;
+                padding: 15px 0;
+                text-align: center;
+                right:0;
+                left: 0;
+                bottom:0%;
+                background-color: $primary-color;
+                color: white;
+                position: absolute;
+                transition: all .5s;
+                &:hover{
+                    color: $primary-color;
+                    background-color: white;
+                }
+            }
+        }
+
+    }
+    
+}
+
+@media(max-width:500px){
+    .profileConfigs{
+        justify-content: center;
+    }
+
+    .profileImgsModal{
+        width:80% !important;
+    }
+}
+@media(max-width:750px){
+ 
+    .profileImgsModal{
+        overflow-y: scroll;
+    }
+}
