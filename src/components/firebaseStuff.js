@@ -266,3 +266,24 @@ const spinnerShower = (x) => {
         span1.style.display = 'flex';
     }
 }
+
+export const changeUsername = (username, picture) => {
+    verifyUsername(username)
+        .then((result) => {
+            if(!result){
+                alert("already exists");
+            }else{
+                setDoc(doc(db, "users", auth.currentUser.email), {
+                    profilePic: picture,
+                    username: username
+                })
+                    .then(()=>{console.log('changed with sucess')})
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}

@@ -23,15 +23,17 @@ export const Feed = (props) => {
    
 
     if(props.init && auth.currentUser){
+        clearTimeout(timeout2);
         return null;
         
+        
     }else if(!props.init && auth.currentUser){
-        clearTimeout(timeout2);
+        
         return (
             <div className='feed'>
                 <FloatinBtn floatin={floatin} setFloatin={setFloatin} setModalOptions={setModalOptions}/>
                 <FeedModal visible={modalOptions} setModalOptions={setModalOptions} setFloatin={setFloatin} />
-                <Header logged={props.logged} username={props.username} homepage={false} feed={true}/>
+                <Header logged={props.logged} userPic={props.userPic} username={props.username} homepage={false} feed={true}/>
                 
                 
             
