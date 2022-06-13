@@ -267,17 +267,21 @@ const spinnerShower = (x) => {
     }
 }
 
-export const changeUsername = (username, picture) => {
+export const changeUsername = (username, picture, setLoginModal) => {
     verifyUsername(username)
         .then((result) => {
             if(!result){
-                alert("already exists");
+                setLoginModal({color: "red", message: "This username already exists", visible: "visible"});  
+                setTimeout(() => {setLoginModal({color: "red", message: "This username already exists", visible: "hidden"});}, 2000);
             }else{
                 setDoc(doc(db, "users", auth.currentUser.email), {
                     profilePic: picture,
                     username: username
                 })
-                    .then(()=>{console.log('changed with sucess')})
+                    .then(() => {
+                        setLoginModal({color: "green", message: "Username changed with sucess", visible: "visible"});  
+                        setTimeout(() => {setLoginModal({color: "green", message: "Username changed with sucess", visible: "hidden"});}, 2000);
+                    })
                     .catch((error) => {
                         console.log(error);
                     });

@@ -54,7 +54,7 @@ function App() {
           <Route path="/" element={<LoginPage setUserPic={setUserPic} setUserState={setUserState} userInfo={userState} setLoginModal={setLoginModal} setInit={setInit} logged={userState.logged} user={userState.user}/>}/>
           <Route path="/feed" element={<Feed userPic={userPic}  setImgs={setImgs} imgs={imgs} init={init} setInit={setInit} logged={userState.logged} username={userState.username}/>}/>
           <Route path="/redirect" element={userState.logged ? <Navigate to="/feed" replace /> : <Navigate to="/" replace/>}/>
-          <Route path="/profile" element={<Profile  userPic={userPic} setUserPic={setUserPic} init={init} user={userState}/>}/>
+          <Route path="/profile" element={<Profile setLoginModal={setLoginModal}  userPic={userPic} setUserPic={setUserPic} init={init} user={userState}/>}/>
         </Routes>
       </Router>
     </div>

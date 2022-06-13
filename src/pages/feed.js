@@ -4,6 +4,7 @@ import { Header } from '../components/header';
 import {ImgCard} from '../components/imgCard';
 import {FloatinBtn} from '../components/floatinBtn';
 import {FeedModal} from '../components/feedModal';
+import {InputImgModal} from '../components/inputImgModal';
 import '../pageStyles/feed.scss';
 import uniqid from 'uniqid';
 import {auth, catchImgs } from '../components/firebaseStuff';
@@ -13,6 +14,7 @@ export const Feed = (props) => {
     const [initFeed, setInitFeed] = useState(true);
     const [floatin, setFloatin] = useState("visible");
     const [modalOptions, setModalOptions] = useState('hidden');
+    const [fileModal, setFileModal] = useState("visible");
     let navigate = useNavigate();
     let timeout2;
     useEffect(() => {
@@ -31,10 +33,10 @@ export const Feed = (props) => {
         
         return (
             <div className='feed'>
-                <FloatinBtn floatin={floatin} setFloatin={setFloatin} setModalOptions={setModalOptions}/>
-                <FeedModal visible={modalOptions} setModalOptions={setModalOptions} setFloatin={setFloatin} />
+                <FloatinBtn floatin={floatin}  setFloatin={setFloatin} setModalOptions={setModalOptions}/>
+                <FeedModal visible={modalOptions} setFileModal={setFileModal} setModalOptions={setModalOptions} setFloatin={setFloatin} />
                 <Header logged={props.logged} userPic={props.userPic} username={props.username} homepage={false} feed={true}/>
-                
+                <InputImgModal visible={fileModal} setFileModal={setFileModal}/>
                 
             
             <div className="feedImageDiv">

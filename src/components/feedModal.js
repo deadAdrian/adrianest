@@ -19,7 +19,7 @@ const feedModalVariants = {
 
 
 
-export const FeedModal = ({visible, setModalOptions, setFloatin}) => {
+export const FeedModal = ({visible, setModalOptions, setFloatin, setFileModal}) => {
     let timeout1;
     let navigate = useNavigate();
 
@@ -47,7 +47,14 @@ export const FeedModal = ({visible, setModalOptions, setFloatin}) => {
                 animate={visible}
                 className="feedModal"
             >
-                <motion.p whileHover={{scale: 1.1}}>Add Image</motion.p>
+                <motion.p 
+                    onClick={() => {
+                        setFileModal("visible");
+                        document.getElementsByClassName('shadow1')[0].style.display = 'block';
+                    }} 
+                    whileHover={{scale: 1.1}}
+                >Add Image
+                </motion.p>
                 <Link to="/profile"><motion.p whileHover={{scale: 1.1}}>Profile</motion.p></Link>
                 <motion.p whileHover={{scale: 1.1}} onClick={() => {auth.signOut(); navigate("/")}}>Logout</motion.p>
             </motion.div>

@@ -6,7 +6,7 @@ import { ProfileImgsModal } from '../components/profileImgsModal';
 import { auth, changeUsername } from '../components/firebaseStuff';
 import '../pageStyles/profile.scss';
 
-export const Profile = ({init, user, userPic, setUserPic}) => {
+export const Profile = ({init, user, userPic, setUserPic, setLoginModal}) => {
     const [picsModal, setPicsModal] = useState("hidden");
     const [changingUsername, setChangingUsername] = useState("");
     let navigate = useNavigate();
@@ -60,7 +60,7 @@ export const Profile = ({init, user, userPic, setUserPic}) => {
                                 className="changeUsername"
                                 onSubmit={(e) => {
                                 e.preventDefault();
-                                changeUsername(changingUsername, userPic);
+                                changeUsername(changingUsername, userPic, setLoginModal);
                             }}>
                                 <input onChange={handleChangeUsername} type="text" value={changingUsername} placeholder={user.username} required maxLength="8"/>
                                 <motion.button
