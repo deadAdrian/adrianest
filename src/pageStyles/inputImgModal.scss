@@ -3,6 +3,7 @@
 
 .shadow1{
     background-color: rgba(0, 0, 0, 0.486);
+    font-family: $myFont;
     display:none;
     color: white;
     width:100vw;
@@ -25,6 +26,14 @@
         margin: 200px auto;
         padding: 20px;
         background-color: $secondary-color;
+
+
+
+        .checaImg{
+            position:absolute;
+            bottom: 17%;
+            right: 15%;
+        }
         button{
             color: white;
             cursor: pointer;
@@ -33,31 +42,54 @@
             border-radius: 4px;
             padding: 10px 10px;
             font-size: 15px;
-            height:37px;
+            height:43px;
 
         }
 
-        .labelDiv{
+        .imgsInputsDiv{
             display: flex;
-            gap: 20px;
-            justify-content: space-between;
-            align-items: center;
-            label{
-                align-self: flex-start;
-                text-align: center;
-                width: 70%;
-                color: white;
-                cursor: pointer;
-                background-color: $primary-color;
+            border-radius: 4px;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+
+            .labelDiv{
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                align-items: center;
+                label{
+                    align-self: flex-start;
+                    text-align: center;
+                    width: 100%;
+                    color: white;
+                    cursor: pointer;
+                    background-color: $primary-color;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 10px 10px;
+                    font-size: 15px;
+                }
+
+                
+            }
+
+            input[type="text"]{
                 border: none;
-                border-radius: 4px;
-                padding: 10px 10px;
+                height: 30px;
                 font-size: 15px;
+                padding: 0 0 0 10px;
+                &:focus{
+                    outline: none;
+                }
             }
         }
+
+        
+        
         
 
-        input{
+        input[type="file"]{
             display: none;
         }
     }

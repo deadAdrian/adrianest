@@ -36,7 +36,7 @@ export const Feed = (props) => {
                 <FloatinBtn floatin={floatin}  setFloatin={setFloatin} setModalOptions={setModalOptions}/>
                 <FeedModal visible={modalOptions} setFileModal={setFileModal} setModalOptions={setModalOptions} setFloatin={setFloatin} />
                 <Header logged={props.logged} userPic={props.userPic} username={props.username} homepage={false} feed={true}/>
-                <InputImgModal visible={fileModal} setFileModal={setFileModal}/>
+                <InputImgModal visible={fileModal} setLoginModal={props.setLoginModal} setImgs={props.setImgs} setInitFeed={setInitFeed} setFileModal={setFileModal}/>
                 
             
             <div className="feedImageDiv">

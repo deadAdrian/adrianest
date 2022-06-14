@@ -4,7 +4,7 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWith
 
 } from "firebase/auth";
 import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, listAll, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAFXoE3wEDvMCf3xTpcyk0O1riQnzYKwHw",
@@ -203,7 +203,8 @@ const registerUsername = async (email, username) => {
 
     await setDoc(doc(db, "users", `${email}`), {
         profilePic: 'defaultUser.png',
-        username: username
+        username: username,
+        imgs: [ ]
     });
 
 }
@@ -290,4 +291,45 @@ export const changeUsername = (username, picture, setLoginModal) => {
         .catch((error) => {
             console.log(error);
         });
+}
+
+export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setLoginModal) => {
+
+    try{
+
+        //get the user data for updating the new image
+        const docRef = doc(db, "users", auth.currentUser.email);
+        const docSnap = await getDoc(docRef);
+
+        //create image info object that will be pushed into existing array of imgs in user data
+        const picInfo = {
+            title: title,
+            likes: 0,
+            comments: [ ]
+        }
+        //update user data
+        if (docSnap.exists()) {
+            let nextImgs = [...docSnap.data().imgs, picInfo];
+            await setDoc(doc(db, "users", auth.currentUser.email), {
+                ...docSnap.data(),
+                imgs: nextImgs
+            });
+            
+            const storageRef = ref(storage, `images/${picture}`);
+
+            // 'file' comes from the Blob or File API
+            uploadBytes(storageRef, file).then((snapshot) => {
+                catchImgs(setImgs, setInitFeed);
+                setLoginModal({color: "green", message: "Image uploaded", visible: "visible"});
+                setTimeout(() => {setLoginModal({color: "green", message: "Image uploaded", visible: "hidden"});}, 2000);
+            });
+        } else {
+        // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+
+    }catch(error){
+        console.log(error)
+    }
+    
 }
