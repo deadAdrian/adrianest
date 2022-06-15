@@ -52,32 +52,11 @@ export const catchImgs = (setImgs, setInitFeed) => {
 
 
 
-
-// export const esperaai  = (setInit, setUserState, setImgs) => {
-//     onAuthStateChanged(auth, (user) => {
-//         if (user) {
-//         // User is signed in, see docs for a list of available properties
-//         // https://firebase.google.com/docs/reference/js/firebase.User
-//         user.displayName ? setUserState({user: user.displayName, logged: true}) :
-//         getUsername(user.email)
-//             .then((username) => {
-//                 setUserState({user: username, logged: true});
-//                 setInit(false);
-//             })
-//             .catch((error) => { console.log(error) });
-//         } else {
-//         // User is signed out
-//         // ...
-//         }
-//     });
-// };
-
-
 //register a user with email and password
 export const createAccount = async (email, password, signInAnimation, setCreateAcc, username, setLoginModal, navigate) => {
     
     const verify1 = await verifyUsername(username);
-    console.log(verify1);
+    
     if(verify1){
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
@@ -204,7 +183,8 @@ const registerUsername = async (email, username) => {
     await setDoc(doc(db, "users", `${email}`), {
         profilePic: 'defaultUser.png',
         username: username,
-        imgs: [ ]
+        imgs: [ ],
+        likes: [ ]
     });
 
 }
@@ -247,12 +227,30 @@ const verifyUsername = async (username) => {
 }
 
 export const updateProfileImage = async (email, username, image, setUserPic) => {
-    await setDoc(doc(db, "users", `${email}`), {
-        username: username,
-        profilePic: image
-    });
 
-    setUserPic(image);
+    try{
+        const docRef = doc(db, "users", email);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+
+            await setDoc(doc(db, "users", `${email}`), {
+                ...docSnap.data(),
+                profilePic: image
+            });
+        
+            setUserPic(image);
+
+        
+        } else {
+        // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }catch(error){
+        console.log(error);
+    }
+
+    
 }
 
 const spinnerShower = (x) => {
@@ -268,29 +266,38 @@ const spinnerShower = (x) => {
     }
 }
 
-export const changeUsername = (username, picture, setLoginModal) => {
-    verifyUsername(username)
-        .then((result) => {
-            if(!result){
-                setLoginModal({color: "red", message: "This username already exists", visible: "visible"});  
-                setTimeout(() => {setLoginModal({color: "red", message: "This username already exists", visible: "hidden"});}, 2000);
-            }else{
-                setDoc(doc(db, "users", auth.currentUser.email), {
-                    profilePic: picture,
+export const changeUsername = async (username, picture, setLoginModal) => {
+    const verify = await verifyUsername(username);
+
+    if(!verify){
+        setLoginModal({color: "red", message: "This username already exists", visible: "visible"});  
+        setTimeout(() => {setLoginModal({color: "red", message: "This username already exists", visible: "hidden"});}, 2000);
+    }else{
+
+        try{
+            const docRef = doc(db, "users", auth.currentUser.email);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+    
+                await setDoc(doc(db, "users", auth.currentUser.email), {
+                    ...docSnap.data(),
                     username: username
-                })
-                    .then(() => {
-                        setLoginModal({color: "green", message: "Username changed with sucess", visible: "visible"});  
-                        setTimeout(() => {setLoginModal({color: "green", message: "Username changed with sucess", visible: "hidden"});}, 2000);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                });
+                
+                setLoginModal({color: "green", message: "Username changed with sucess", visible: "visible"});  
+                setTimeout(() => {setLoginModal({color: "green", message: "Username changed with sucess", visible: "hidden"});}, 2000);
+
+            } else {
+            // doc.data() will be undefined in this case
+                console.log("No such document!");
             }
-        })
-        .catch((error) => {
+        }catch(error){
             console.log(error);
-        });
+        }
+        
+    }
+       
 }
 
 export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setLoginModal) => {

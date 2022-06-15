@@ -28,6 +28,7 @@
             border-radius: 4px;
             background-color: $secondary-color;
             width: 66vw;
+            max-width: 775px;
             height: 500px;
             
             h2{
@@ -84,16 +85,18 @@
         padding:20px 20px;
         background-color: $secondary-color;
         justify-content: space-between;
-        width: 60vw;
+        width: 80vw;
+        max-width: 670px;
         border-radius: 4px;
         gap: 100px;
-        margin:30px auto;
+        margin:100px auto;
 
         .profilePic{
             display: flex;
             flex-direction: column;
             align-items: center;
             h2{
+                cursor: default;
                 color: white;
                 text-align: center;
             }
@@ -135,6 +138,7 @@
             justify-content: space-around;
             align-items: center;
             h2{
+                cursor: default;
                 color: white;
                 text-align: center;
             }
@@ -180,6 +184,14 @@
                 margin-bottom: 20px;
                 flex-direction: column;
                 align-items: center;
+
+                .emailInfo1{
+                    display: flex;
+                    gap: 10px;
+                    color: white;
+                    align-items: center;
+                    justify-content: space-between;
+                }
 
                 p{
                     color:white;

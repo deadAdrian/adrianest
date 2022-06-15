@@ -69,7 +69,19 @@ export const Profile = ({init, user, userPic, setUserPic, setLoginModal}) => {
                             </form>
                         </div>
                         <div className="emailInfo">
-                            <h2>Email</h2>
+                            <div className="emailInfo1">
+                                <h2>Email</h2>
+                                <i 
+                                    onClick={() => {
+                                        setLoginModal({color: "red", message: "Sorry, you can't change your email.", visible: "visible"});
+                                        setTimeout(() => {setLoginModal({color: "red", message: "Sorry, you can't change your email.", visible: "hidden"});}, 2000);
+                                    }}
+                                    title="Sorry, you can't change your email."
+                                    className='bx bx-info-circle'>
+
+                                </i>
+                            </div>
+                            
                             <p>{auth.currentUser.email}</p>
                         </div>
                         
