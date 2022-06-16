@@ -23,7 +23,8 @@
         gap: 40px;
         max-width: 850px;
         max-height: 500px;
-
+        overflow-y: scroll;
+        overflow-x: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -46,7 +47,7 @@
             flex-direction: column;
             justify-content: center;
             width:45%;
-            min-width: 276px;
+            min-width: 200px;
 
             h2{
                 align-self: center;
@@ -60,13 +61,11 @@
                 background-color: white;
                 padding: 10px 10px;
                 border-radius: 4px;
-                min-width: 250px;
-                min-height: 250px;
-                max-width: 400px;
-                max-height: 400px;
+                min-width: 150px;
+                min-height: 150px;
                 img{
                     cursor: pointer;
-                    object-fit: cover;
+                    object-fit: scale-down;
                     max-width: 100%;
                     
                 }
@@ -80,7 +79,7 @@
             flex-direction: column;
             
             width:45%;
-            min-width: 276px;
+            min-width: 200px;
             h2{
                 margin: 0;
                 color: white;
@@ -89,13 +88,20 @@
 
             .likeAndInput{
                 display: flex;
+                width: 100%;
                 margin-top: 20px;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: center;
+                gap: 20px;
                 position: relative;
 
+                p{
+                    color: white;
+                    margin: 0;
+                }
+
                 input[type="text"]{
-                    width: 85%;
+                    width: 75%;
                     height: 35px;
                     border: none;
                     padding: 0 40px 0 15px;
@@ -105,7 +111,6 @@
                     }
                 }
                 .bx{
-                    width: 15%;
                     cursor: pointer;
                     font-size: 35px;
                 }
@@ -134,6 +139,7 @@
                 overflow-y: scroll;
                 height: 100%;
                 max-height: 307.5px;
+                width: 100%;
 
                 &::-webkit-scrollbar{
                     background: $secondary-color;
@@ -154,6 +160,10 @@
 @media(max-width:1000px){
     .imgInfoModal{
         align-items: center;
-        overflow-y: scroll;
+        
+    }
+
+    .imageAndTitle, .commentsContainer{
+        width:80% !important;
     }
 }

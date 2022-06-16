@@ -20,7 +20,7 @@ const iconVariants = {
     }
 }
 
-export const ImgInfoModal = ({liked, toogleLike, title, visible, setImgInfoModal}) => {
+export const ImgInfoModal = ({likes, imgName, imgSrc, liked, toogleLike, title, visible, setImgInfoModal}) => {
     
 
     return (
@@ -42,8 +42,9 @@ export const ImgInfoModal = ({liked, toogleLike, title, visible, setImgInfoModal
                 <div className="imageAndTitle">
                     <h2>{title}</h2>
                     <div className="imgContainer">
-                        <img /*src={imgSrc}*/ src={`${process.env.PUBLIC_URL}/assets/profilePics/Hands on fire.png`}/>
+                        <img src={imgSrc}/>
                     </div>
+                    
                 </div>
                 
                 <div className="commentsContainer">
@@ -52,7 +53,9 @@ export const ImgInfoModal = ({liked, toogleLike, title, visible, setImgInfoModal
                         {liked && 
                             <motion.i 
                                 id="liked" 
-                                onClick={toogleLike}
+                                onClick={() => {
+                                    toogleLike(imgName);
+                                }}
                                 className='bx bxs-heart'
                                 variants={iconVariants}
                                 initial="hidden"
@@ -63,7 +66,9 @@ export const ImgInfoModal = ({liked, toogleLike, title, visible, setImgInfoModal
                         {!liked &&
                             <motion.i  
                                 id="unliked" 
-                                onClick={toogleLike}
+                                onClick={() => {
+                                    toogleLike(imgName);
+                                }}
                                 className='bx bx-heart'
                                 variants={iconVariants}
                                 initial="hidden"
@@ -71,6 +76,7 @@ export const ImgInfoModal = ({liked, toogleLike, title, visible, setImgInfoModal
                             >
                             </motion.i>
                         }
+                        <p className="likes">{likes}</p>
                         <input type="text" maxLength="100"/>
                         <i className='bx bxs-send'></i>
                     </div>

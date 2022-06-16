@@ -1,7 +1,7 @@
 import React from 'react';
 import {motion} from 'framer-motion'
 
-export const ImgCard = ({src, manageImgInfoModal}) => {
+export const ImgCard = ({src, manageImgInfoModal, name}) => {
 
     return(
         <motion.div 
@@ -9,7 +9,7 @@ export const ImgCard = ({src, manageImgInfoModal}) => {
                 scale: 1.01
             }}
             className="imgCard"
-            onClick={manageImgInfoModal}
+            onClick={() => {manageImgInfoModal(name, src);}}
         >
             <img  src={src}  />
         </motion.div>

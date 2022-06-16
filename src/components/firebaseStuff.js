@@ -26,12 +26,11 @@ export const catchImgs = (setImgs, setInitFeed) => {
     const imgsSrc = [];
     listAll(listRef)
         .then((list) => {
-            console.log(list);
             list.items.forEach((img) => {
 
                 getDownloadURL(ref(storage, img._location.path))
                     .then((url) => {                    
-                        imgsSrc.push(url);         
+                        imgsSrc.push({url: url, name: img.name});         
                     })
                     .catch((error) => {
                         console.log(error);
@@ -308,15 +307,30 @@ export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setL
         const docRef = doc(db, "users", auth.currentUser.email);
         const docSnap = await getDoc(docRef);
 
+        //Uses the title to generate image tags that will be used in search funcionality
+        const imgTags = title.toLowerCase().split(" ");
+
         //create image info object that will be pushed into existing array of imgs in user data
         const picInfo = {
             title: title,
+            name: picture,
             likes: 0,
-            comments: [ ]
+            comments: [ ],
+            tags: imgTags
         }
+
+        //create a resumed image info object saved on user data for query purposes
+        const userPicInfo = {
+            title: title,
+            name: picture,
+        }
+
+        //update the data in images as well
+        await setDoc(doc(db, "images", `${picture}`), picInfo);
+
         //update user data
         if (docSnap.exists()) {
-            let nextImgs = [...docSnap.data().imgs, picInfo];
+            let nextImgs = [...docSnap.data().imgs, userPicInfo];
             await setDoc(doc(db, "users", auth.currentUser.email), {
                 ...docSnap.data(),
                 imgs: nextImgs
@@ -339,4 +353,93 @@ export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setL
         console.log(error)
     }
     
+}
+
+export const getImgData = async (name) => {
+    const docRef = doc(db, "users", auth.currentUser.email);
+    const docSnap = await getDoc(docRef);
+
+    const docRefImg = doc(db, "images", name);
+    const docSnapImg = await getDoc(docRefImg);
+
+    let imgInfo;
+
+    if (docSnapImg.exists() && docSnap.exists()) {
+        
+        imgInfo = docSnapImg.data();
+        imgInfo.liked = docSnap.data().likes.includes(name);
+        
+        return imgInfo;
+
+    } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+    }
+}
+
+
+//Increments or decrements like on a picture
+export const likeOrDeslike = async (name, setCanUserLike, setLikes) => {
+
+    //This prevent user from spamming like button and cause async errors
+    setCanUserLike(false);
+
+    //gets user reference
+    const docRef = doc(db, "users", auth.currentUser.email);
+    const docSnap = await getDoc(docRef);
+
+    //gets image reference
+    const docRefImg = doc(db, "images", name);
+    const docSnapImg = await getDoc(docRefImg);
+
+    
+
+    if (docSnap.exists() && docSnapImg.exists()) {
+
+        //create a copy of users likes array
+        const likeCopy = [...docSnap.data().likes];
+
+        //if the image is already liked then remove from liked images user array and update data
+        if(docSnap.data().likes.includes(name)){
+            likeCopy.splice(docSnap.data().likes.indexOf(name), 1);
+
+            await setDoc(doc(db, "users", auth.currentUser.email), {
+                ...docSnap.data(),
+                likes: likeCopy
+            });
+
+            //and decrements the likes on image data as well
+            await setDoc(doc(db, "images", name), {
+                ...docSnapImg.data(),
+                likes: docSnapImg.data().likes - 1
+            });
+
+        }else{
+            //otherwise includes the liked image on user data
+            likeCopy.push(name);
+
+            await setDoc(doc(db, "users", auth.currentUser.email), {
+                ...docSnap.data(),
+                likes: likeCopy
+            });
+
+            //and increments the likes on image data as well
+            await setDoc(doc(db, "images", name), {
+                ...docSnapImg.data(),
+                likes: docSnapImg.data().likes + 1
+            });
+        }
+
+        //gets a updated img reference so the likes can be updated on time
+        const docRefImg2 = doc(db, "images", name);
+        const docSnapImg2 = await getDoc(docRefImg);
+        setLikes(docSnapImg2.data().likes);
+
+        //allows user to like/deslike again;
+        setCanUserLike(true);
+
+    } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+    }
 }
