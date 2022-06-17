@@ -39,7 +39,6 @@ export const catchImgs = (setImgs, setInitFeed) => {
             });
             
         }).then(() => {
-            console.log(imgsSrc);
             setImgs(imgsSrc);
             setTimeout(() => {setInitFeed(false)}, 4000);    
         })
@@ -442,4 +441,47 @@ export const likeOrDeslike = async (name, setCanUserLike, setLikes) => {
     // doc.data() will be undefined in this case
     console.log("No such document!");
     }
+}
+
+export const addComment = async (imgName, comment, setComments) => {
+
+    try{
+        //gets user reference
+        const docRef = doc(db, "users", auth.currentUser.email);
+        const docSnap = await getDoc(docRef);
+        
+        //gets image reference
+        const docRefImg = doc(db, "images", imgName);
+        const docSnapImg = await getDoc(docRefImg);
+
+        
+        if(docSnapImg.exists() && docSnap.exists()){
+            
+            //Create a comment object with user info
+            const commentInfo = {
+                email: auth.currentUser.email,
+                comment: comment,
+            }
+            
+            //Create a comments copy for modification and updates
+            const commentsCopy = [...docSnapImg.data().comments, commentInfo];
+
+            //and update the comments on the database
+            await setDoc(doc(db, "images", imgName), {
+                ...docSnapImg.data(),
+                comments: commentsCopy
+            });
+
+            //Resets the comment input field and sets the news comments
+            document.getElementById('commentInput').value = "";
+            setComments(commentsCopy);
+        }else{
+            console.log('no such document!');
+        }
+
+    }catch(error){
+        console.log(error);
+    }
+    
+
 }

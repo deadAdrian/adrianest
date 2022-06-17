@@ -27,6 +27,7 @@ export const Feed = (props) => {
     const [likes, setLikes] = useState("");
     const [title, setTitle] = useState("");
     const [imgName, setImgName] = useState("");
+    const [comments, setComments] = useState([]);
     const [imgInfoModalSrc, setImgInfoModalSrc] = useState("");
 
     //Sets the image modal visible or not
@@ -70,6 +71,7 @@ export const Feed = (props) => {
         setLiked(imgInfo.liked);
         setLikes(imgInfo.likes);
         setImgName(imgInfo.name);
+        setComments(imgInfo.comments);
         setImgInfoModalSrc(src);
         document.getElementsByClassName('shadow3')[0].style.display = 'block';
         setImgInfoModal("visible");
@@ -88,7 +90,7 @@ export const Feed = (props) => {
                 <FeedModal visible={modalOptions} setFileModal={setFileModal} setModalOptions={setModalOptions} setFloatin={setFloatin} />
                 <Header logged={props.logged} userPic={props.userPic} username={props.username} homepage={false} feed={true}/>
                 <InputImgModal visible={fileModal} setLoginModal={props.setLoginModal} setImgs={props.setImgs} setInitFeed={setInitFeed} setFileModal={setFileModal}/>
-                <ImgInfoModal likes={likes} imgName={imgName} imgSrc={imgInfoModalSrc} liked={liked} setImgInfoModal={setImgInfoModal} visible={imgInfoModal} toogleLike={toogleLike} title={title}/>
+                <ImgInfoModal setComments={setComments} comments={comments} likes={likes} imgName={imgName} imgSrc={imgInfoModalSrc} liked={liked} setImgInfoModal={setImgInfoModal} visible={imgInfoModal} toogleLike={toogleLike} title={title}/>
             
             <div className="feedImageDiv">
                 

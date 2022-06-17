@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import {motion} from 'framer-motion';
+import {addComment} from './firebaseStuff';
+import uniqid from 'uniqid';
+import {Comment} from './comment';
 import '../pageStyles/imgInfoModal.scss';
 
 const imgInfoModalVariants = {
@@ -20,9 +23,10 @@ const iconVariants = {
     }
 }
 
-export const ImgInfoModal = ({likes, imgName, imgSrc, liked, toogleLike, title, visible, setImgInfoModal}) => {
+export const ImgInfoModal = ({setComments,comments,likes, imgName, imgSrc, liked, toogleLike, title, visible, setImgInfoModal}) => {
     
-
+    
+    let myKey = 0;
     return (
         <div 
             className='shadow3' 
@@ -77,22 +81,31 @@ export const ImgInfoModal = ({likes, imgName, imgSrc, liked, toogleLike, title, 
                             </motion.i>
                         }
                         <p className="likes">{likes}</p>
-                        <input type="text" maxLength="100"/>
-                        <i className='bx bxs-send'></i>
+                        <input 
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter'){
+                                    addComment(imgName ,document.getElementById('commentInput').value, setComments);
+                                }
+                            }}
+                            id="commentInput" 
+                            type="text" 
+                            maxLength="100"
+                        />
+                        <i 
+                            onClick={() => {
+                                addComment(imgName, document.getElementById('commentInput').value, setComments);
+                            }}
+                            className='bx bxs-send'
+                        ></i>
                     </div>
                     <div className="comments">
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
-                        <p>dasdsad</p>
+                        {
+                            comments.map((comment) => {
+                                myKey++;
+                                return <Comment commentInfo={comment} key={uniqid()}/>
+                            })
+                        }
+                        
                     </div>
                 </div>
             </motion.div>
