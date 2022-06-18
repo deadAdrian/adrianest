@@ -14,9 +14,8 @@ export const Header = ({logged, username, homepage, feed, userPic}) => {
             </div>
             
 
-            {feed &&
-                <input placeholder="Search" className="searchInput" type="text"/>
-            }
+            
+            
             {logged && !homepage &&
                 <Link to="/profile">
                     <div className="userImage">

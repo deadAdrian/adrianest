@@ -4,12 +4,14 @@ import uniqid from 'uniqid';
 import '../pageStyles/comment.scss';
 
 
-
+//Component referent to a comment on a image info modal
 export const Comment = ({commentInfo}) => {
+
+    //this saves the user info (picture and username)
     const[picAndUsername, setPicAndUsername] = useState({});
 
     useEffect(() => {
-        
+        //here we wait the fetch of the user info every time the comment is loaded
         const awaiter = async() => {
             const userInfo = await getUsername(commentInfo.email); 
             setPicAndUsername(userInfo);
@@ -18,6 +20,7 @@ export const Comment = ({commentInfo}) => {
         
     }, []);
 
+    //not much here, just plain html
     return (
         <div className="comment" >
             <div className="imgAndUsername">

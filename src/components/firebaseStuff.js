@@ -6,6 +6,10 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWith
 import { getFirestore, collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL, listAll, uploadBytes } from "firebase/storage";
 
+//prepare to get mad cause this is pure madnesssssssss
+
+//this variables below that arent functions are initializations of firebase itself
+//then i will not explain it
 const firebaseConfig = {
     apiKey: "AIzaSyAFXoE3wEDvMCf3xTpcyk0O1riQnzYKwHw",
     authDomain: "adrianest-85bb1.firebaseapp.com",
@@ -21,6 +25,8 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 const storage = getStorage();
 
+
+//this function is called every time the feed is mounted, it catch all the image from the firebase storage
 export const catchImgs = (setImgs, setInitFeed) => {
     const listRef = ref(storage, "images");
     const imgsSrc = [];
@@ -48,9 +54,14 @@ export const catchImgs = (setImgs, setInitFeed) => {
     
 }
 
-
+//some of the params are used in other function so i will not explain again xD.
+//other functions presents here are reused inside of some main ones, so if its note explained-
+//in the top of the function look out for it, you should find.
 
 //register a user with email and password
+//signInAnimation moves the sign in div, so the user can login immediatly
+//setCreateAcc resets the inputs fields on the sign up div
+//setLoginModal set the modal with the info about the log process (if it was okay or some error)
 export const createAccount = async (email, password, signInAnimation, setCreateAcc, username, setLoginModal, navigate) => {
     
     const verify1 = await verifyUsername(username);
@@ -88,7 +99,10 @@ export const createAccount = async (email, password, signInAnimation, setCreateA
     
 }
 
-//login a user with google account
+//login a user with google account.
+//setUserState updates the userState on <App /> with the username and the logged property
+//navigate takes the user directly to the feed after the succeed login
+//setUserPic gets the picture of ther user from firebase and sets it
 export const loginGoogle = (setUserState, setLoginModal, navigate, setUserPic) => {
     setPersistence(auth, browserSessionPersistence)
         .then(() => {
@@ -134,7 +148,7 @@ export const loginGoogle = (setUserState, setLoginModal, navigate, setUserPic) =
     
 }
 
-//login a user with email and password
+//login a user with email and password.
 export const loginEmail = (email, password, setUserState, setLoginModal, navigate, setUserPic) => {
     spinnerShower(true);
 
@@ -176,6 +190,9 @@ export const loginEmail = (email, password, setUserState, setLoginModal, navigat
     
 }
 
+//Here we set a document on firebase for every user with the username-
+//the default profile picture that can be changed, the imgs the user uploaded 
+// and the images the user liked
 const registerUsername = async (email, username) => {
 
     await setDoc(doc(db, "users", `${email}`), {
@@ -187,6 +204,7 @@ const registerUsername = async (email, username) => {
 
 }
 
+//Here we get a username from firebase with a given email
 export const getUsername = async (email) => {
     const docRef = doc(db, "users", email);
     const docSnap = await getDoc(docRef);
@@ -204,6 +222,7 @@ export const getUsername = async (email) => {
     }
 }
 
+//that one is simple, we check if there is a current user and return it
 export const userLogged = () => {
     if(auth.currentUser){
         return true;
@@ -212,6 +231,8 @@ export const userLogged = () => {
     }
 }
 
+
+//here we check if a username already exists in database to prevent repeated ones
 const verifyUsername = async (username) => {
     let mdsEm = true;
     const querySnapshot = await getDocs(collection(db, "users"));
@@ -224,6 +245,8 @@ const verifyUsername = async (username) => {
     
 }
 
+
+//Update the profile picture of a user in database
 export const updateProfileImage = async (email, username, image, setUserPic) => {
 
     try{
@@ -251,6 +274,7 @@ export const updateProfileImage = async (email, username, image, setUserPic) => 
     
 }
 
+//turns the spinner on the login page to be shown or not
 const spinnerShower = (x) => {
     let spinner = document.getElementsByClassName('lds-ellipsis')[0];
     let span1 = document.getElementsByClassName('span1')[0];
@@ -264,6 +288,7 @@ const spinnerShower = (x) => {
     }
 }
 
+//updates a new username of a user on database
 export const changeUsername = async (username, picture, setLoginModal) => {
     const verify = await verifyUsername(username);
 
@@ -298,6 +323,8 @@ export const changeUsername = async (username, picture, setLoginModal) => {
        
 }
 
+//uploads a image to firebase storage and a document with the info that will be used-
+//(title, likes, comments)
 export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setLoginModal) => {
 
     try{
@@ -354,6 +381,8 @@ export const uploadImg = async (file, title, picture, setInitFeed, setImgs, setL
     
 }
 
+
+//gets the image info from firebase to be used in imgInfoModal
 export const getImgData = async (name) => {
     const docRef = doc(db, "users", auth.currentUser.email);
     const docSnap = await getDoc(docRef);
@@ -443,6 +472,8 @@ export const likeOrDeslike = async (name, setCanUserLike, setLikes) => {
     }
 }
 
+
+//adds a comment on image data on firebase
 export const addComment = async (imgName, comment, setComments) => {
 
     try{
